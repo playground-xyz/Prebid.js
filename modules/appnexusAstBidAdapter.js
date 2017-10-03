@@ -4,6 +4,7 @@ import { registerBidder } from 'src/adapters/bidderFactory';
 import { NATIVE, VIDEO } from 'src/mediaTypes';
 
 const BIDDER_CODE = 'appnexusAst';
+const ALIASES = ['playground'];
 const URL = '//ib.adnxs.com/ut/v3/prebid';
 const SUPPORTED_AD_TYPES = ['banner', 'video', 'native'];
 const VIDEO_TARGETING = ['id', 'mimes', 'minduration', 'maxduration',
@@ -27,6 +28,7 @@ const SOURCE = 'pbjs';
 export const spec = {
   code: BIDDER_CODE,
   supportedMediaTypes: [VIDEO, NATIVE],
+  aliases: ALIASES,
 
   /**
    * Determines whether or not the given bid request is valid.
