@@ -3,7 +3,7 @@ import { BANNER } from '../src/mediaTypes.js';
 import * as utils from '../src/utils.js';
 
 const BIDDER_CODE = 'pxyz';
-const URL = 'https://ads.playground.xyz/host-config/prebid?v=2';
+const URL = 'https://ppx.playground.xyz/host-config/prebid?v=2';
 const DEFAULT_CURRENCY = 'USD';
 
 export const spec = {
@@ -127,7 +127,7 @@ export const spec = {
   getUserSyncs: function (syncOptions) {
     return [{
       type: 'image',
-      url: '//ib.adnxs.com/getuidnb?https://ads.playground.xyz/usersync?partner=appnexus&uid=$UID'
+      url: '//ib.adnxs.com/getuidnb?https://ppx.playground.xyz/usersync?partner=appnexus&uid=$UID'
     }];
   }
 }
