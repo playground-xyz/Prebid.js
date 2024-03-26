@@ -18,7 +18,7 @@ import {registerBidder} from '../src/adapters/bidderFactory.js';
 const BIDDER_CODE = 'gumgum';
 const storage = getStorageManager({bidderCode: BIDDER_CODE});
 const ALIAS_BIDDER_CODE = ['gg'];
-const BID_ENDPOINT = `https://g2.gumgum.com/hbid/imp`;
+const BID_ENDPOINT = `https://privacy-sandbox-demos-ssp.dev/gumgum-prebid`;
 const JCSI = { t: 0, rq: 8, pbv: '$prebid.version$' }
 const SUPPORTED_MEDIA_TYPES = [BANNER, VIDEO];
 const TIME_TO_LIVE = 60;
@@ -296,6 +296,8 @@ function getEids(userId) {
  * @return ServerRequest Info describing the request to the server.
  */
 function buildRequests(validBidRequests, bidderRequest) {
+  logWarn(bidderRequest.fledgeEnabled, 'bidderRequest.fledgeEnabled');
+
   const bids = [];
   const gdprConsent = bidderRequest && bidderRequest.gdprConsent;
   const uspConsent = bidderRequest && bidderRequest.uspConsent;
@@ -537,7 +539,8 @@ function interpretResponse(serverResponse, bidRequest) {
     meta: {
       adomain: advertiserDomains,
       mediaType: type
-    }
+    },
+    paapi
   } = Object.assign(defaultResponse, serverResponseBody);
   let data = bidRequest.data || {};
   let product = data.pi;
@@ -589,7 +592,19 @@ function interpretResponse(serverResponse, bidRequest) {
       meta: metaData
     })
   }
-  return bidResponses
+
+  if (paapi) {
+    const auctionConfigs = [{
+      bidId: bidRequest.id,
+      config: paapi.auctionConfig
+    }];
+    const response = {bids: bidResponses, fledgeAuctionConfigs: auctionConfigs};
+    logWarn('GumGum PAAPI', response);
+    return response;
+  }
+
+  logWarn('GumGum No-PAAPI', bidResponses);
+  return bidResponses;
 }
 
 /**
