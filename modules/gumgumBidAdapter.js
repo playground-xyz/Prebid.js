@@ -296,8 +296,6 @@ function getEids(userId) {
  * @return ServerRequest Info describing the request to the server.
  */
 function buildRequests(validBidRequests, bidderRequest) {
-  logWarn(bidderRequest.fledgeEnabled, 'bidderRequest.fledgeEnabled');
-
   const bids = [];
   const gdprConsent = bidderRequest && bidderRequest.gdprConsent;
   const uspConsent = bidderRequest && bidderRequest.uspConsent;
@@ -600,11 +598,9 @@ function interpretResponse(serverResponse, bidRequest) {
       config: paapi.auctionConfig
     }];
     const response = {bids: bidResponses, fledgeAuctionConfigs: auctionConfigs};
-    logWarn('GumGum PAAPI', response);
     return response;
   }
 
-  logWarn('GumGum No-PAAPI', bidResponses);
   return bidResponses;
 }
 
