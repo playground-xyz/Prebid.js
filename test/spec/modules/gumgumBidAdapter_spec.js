@@ -1034,7 +1034,38 @@ describe('gumgumAdapter', function () {
       const videoBidResponse = spec.interpretResponse({ body: serverResponse }, { ...bidRequest, data: { pi: 7 } })[0];
       expect(videoBidResponse.vastXml).to.exist;
     });
-  })
+
+    it('should encode a string containing a non-Latin character without failing', function () {
+      let serverResponse = {
+        'ad': {
+          'id': 2065333,
+          'height': 90,
+          'ipd': 2000,
+          'markup': 'This is a test string with an emdash – character', // non-Latin character
+          'ii': true,
+          'du': null,
+          'price': 1,
+          'zi': 0,
+          'impurl': 'http://g2.gumgum.com/ad/view',
+          'clsurl': 'http://g2.gumgum.com/ad/close'
+        },
+        'pag': {
+          't': 'ggumtest',
+          'pvid': 'aa8bbb65-427f-4689-8cee-e3eed0b89eec',
+        },
+        'thms': 10000
+      }
+
+      let result = spec.interpretResponse({ body: serverResponse }, bidRequest);
+      expect(result[0].ad).to.exist;
+      expect(result[0].ad).to.contain('This is a test string with an emdash – character');
+
+      // Confirm that native btoa would have thrown an error on this response if used
+      const nativeBtoa = () => btoa(JSON.stringify(serverResponse));
+      expect(nativeBtoa).to.throw(Error);
+    });
+  });
+
   describe('getUserSyncs', function () {
     const syncOptions = {
       'iframeEnabled': 'true'
